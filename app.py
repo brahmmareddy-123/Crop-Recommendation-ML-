@@ -1,6 +1,8 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 
@@ -57,3 +59,27 @@ if st.button("🌾 Recommend Crop"):
     prediction = model.predict(input_data)
     
     st.success(f"✅ Recommended Crop: {prediction[0]}")
+    
+    
+# Model Evaluation
+accuracy = model.score(X_test, y_test)
+st.subheader("📈 Model Accuracy")
+st.write(f"Accuracy: {round(accuracy*100,2)}%")
+st.subheader("🌟 Feature Importance")
+
+importances = model.feature_importances_
+features = X.columns
+
+fig, ax = plt.subplots()
+sns.barplot(x=importances, y=features, ax=ax)
+ax.set_title("Feature Importance")
+st.pyplot(fig)
+st.subheader("🔥 Correlation Heatmap")
+
+fig2, ax2 = plt.subplots(figsize=(8,6))
+
+numeric_df = df.select_dtypes(include=np.number)
+
+sns.heatmap(numeric_df.corr(), annot=True, cmap="YlGnBu", ax=ax2)
+
+st.pyplot(fig2)
